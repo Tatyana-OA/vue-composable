@@ -1,6 +1,6 @@
 <script setup>
 import { useMouse } from "./composables/mouse";
-import { useTitle, useRefHistory } from "@vueuse/core";
+import { useTitle, useRefHistory, useInterval } from "@vueuse/core";
 import { ref } from "vue";
 
 // Custom Composable
@@ -22,6 +22,9 @@ const undoCount = () => {
 const clearCount = () => {
   count.value = 0;
 };
+
+const { counter: timer, pause, resume } = useInterval(1000, { controls: true });
+console.log(timer);
 </script>
 
 <template>
@@ -33,5 +36,8 @@ const clearCount = () => {
     <button @click="incrementCount">Increment Count</button>
     <button @click="undoCount">Undo Change</button>
     <button @click="clearCount">Clear Count</button>
+    <h3>Seconds: {{ timer }}</h3>
+    <button @click="pause">Pause Timer</button>
+    <button @click="resume">Resume Timer</button>
   </main>
 </template>
