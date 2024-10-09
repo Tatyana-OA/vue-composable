@@ -1,6 +1,11 @@
 <script setup>
 import { useMouse } from "./composables/mouse";
-import { useTitle, useRefHistory, useInterval } from "@vueuse/core";
+import {
+  useTitle,
+  useRefHistory,
+  useInterval,
+  useAsyncQueue,
+} from "@vueuse/core";
 import { ref } from "vue";
 
 // Custom Composable
@@ -25,6 +30,28 @@ const clearCount = () => {
 
 const { counter: timer, pause, resume } = useInterval(1000, { controls: true });
 console.log(timer);
+
+const getFirstPromise = () => {
+  // Create our first promise
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(1000);
+    }, 10);
+  });
+};
+
+const getSecondPromise = (result) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(1000 + result);
+    }, 20);
+  });
+};
+
+const { activeIndex, result } = useAsyncQueue([
+  getFirstPromise,
+  getSecondPromise,
+]);
 </script>
 
 <template>
@@ -39,5 +66,8 @@ console.log(timer);
     <h3>Seconds: {{ timer }}</h3>
     <button @click="pause">Pause Timer</button>
     <button @click="resume">Resume Timer</button>
+
+    <p>active index: {{ activeIndex }}</p>
+    <p>{{ result }}</p>
   </main>
 </template>
